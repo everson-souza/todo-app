@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form"
-import { Grid } from '@mui/material';
+import { Grid, Switch } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -55,6 +55,13 @@ const TodoDialog = ({
       onCreateTodo(infos);
   }
 
+  const [checked, setChecked] = React.useState(true);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (todo) todo.completed = !todo?.completed;
+    setChecked(event.target.checked);
+  };
+
   return (
       <Dialog        
         open={state}
@@ -76,52 +83,60 @@ const TodoDialog = ({
           <CloseIcon />
         </IconButton>
         <DialogContent> 
-          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-            
-              <Grid item xs={12}>
-                <input type="hidden" id="id" {...register("id")} value={todo? todo.id : undefined}/>
-                
-                
-                <TextField
-                  label="Description"
-                  defaultValue={todo? todo.text : undefined}   
-                  error={errors.text ? true : false}
-                  helperText={errors.text ? errors.text?.message: ""}
-                  {...register("text", {
+          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>            
+            <Grid item xs={12}>
+              <input type="hidden" id="id" {...register("id")} value={todo? todo.id : undefined}/>
+              <TextField
+                label="Description"
+                defaultValue={todo? todo.text : undefined}   
+                error={errors.text ? true : false}
+                helperText={errors.text ? errors.text?.message: ""}
+                {...register("text", {
+                  shouldUnregister: true,
+                  required: "Description is required",
+                  minLength: {
+                    value: 10,
+                    message: "Description should be at least 10 characters",
+                  },
+                  maxLength: {
+                    value: 255,
+                    message: "Description should be at most 255 characters",
+                  },
+                })}
+                autoFocus
+                required
+                id="text"
+                fullWidth
+                variant="standard"            
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'  >
+                <DatePicker
+                  slotProps={{ textField: { fullWidth: true } }}
+                  defaultValue={todo ? dayjs(todo.deadline) : undefined }
+                  {...register("deadline", {
                     shouldUnregister: true,
-                    required: "Description is required",
-                    minLength: {
-                      value: 10,
-                      message: "Description should be at least 10 characters",
-                    },
-                    maxLength: {
-                      value: 255,
-                      message: "Description should be at most 255 characters",
-                    },
                   })}
-                  autoFocus
-                  required
-                  id="text"
-                  fullWidth
-                  variant="standard"            
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'  >
-                  <DatePicker
-                    slotProps={{ textField: { fullWidth: true } }}
-                    defaultValue={todo ? dayjs(todo.deadline) : undefined }
-                    {...register("deadline", {
-                      shouldUnregister: true,
-                    })}
-                    onChange={(date) => {
-                      if (date) {
-                        setValue('deadline', date.toDate());
-                      }
-                    }}
-                  />                
-                </LocalizationProvider>
-              </Grid>
+                  onChange={(date) => {
+                    if (date) {
+                      setValue('deadline', date.toDate());
+                    }
+                  }}
+                />                
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12}>              
+              <div style={{
+                    textAlign: 'right',
+                    fontSize: 14,
+                  }}>
+                <Switch id="switch1" required={true} {...register("completed")} onChange={handleChange} checked={todo? todo.completed : false}/>
+                <span>
+                  Completed
+                </span>
+              </div>
+            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>

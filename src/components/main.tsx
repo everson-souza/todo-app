@@ -23,7 +23,6 @@ export default function Main() {
 
   //API FUNCTIONS
   const [loading, setLoading] = useState(true);
-  
   const [alertStatus, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState('info');
@@ -37,7 +36,7 @@ export default function Main() {
   const hideAlert = () => {
     setOpen(false);
   };
-  
+
   const handleAPIRead = async () => {
     try {
       setLoading(true);
@@ -80,7 +79,6 @@ export default function Main() {
     }
   };
 
-
   const handleAPIUpdate = async (todo:Todo) => {
     try {
 
@@ -117,7 +115,6 @@ export default function Main() {
       console.error('Error creating data:', error);
     }
   };
-
 
   const handleAPIDelete = async (id?:number) => {
     try {
@@ -167,9 +164,9 @@ export default function Main() {
         severity={severity}
         message = {message}
       />
-      <div style={{width: '600px'}}>
+      <div className="principal">
         
-        <h1 style={{textAlign:"center"}}>TO-DO LIST</h1>
+        <h1>TO-DO LIST</h1>
         
         <Fab sx={{ marginLeft: "auto", display:"flex" }} color="primary" onClick={handleClickOpen}>
           <AddIcon />
@@ -186,7 +183,7 @@ export default function Main() {
         {!loading ? (
           todos.length == 0 ?
           (
-            <p style={{textAlign: "center"}}>Your to-do list is empty.</p>
+            <p className="p-emptylist">Your to-do list is empty.</p>
           ) : 
           (
             <TodoList

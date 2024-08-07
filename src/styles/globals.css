@@ -4,3 +4,15 @@
     width: 600px;
     top: 40px;
 }
+
+div.principal{
+     
+    width: 600px;
+    
+    h1{
+        text-align:center;
+    }
+    .p-emptylist{
+        text-align:center;
+    }
+}
