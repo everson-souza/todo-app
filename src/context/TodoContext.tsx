@@ -5,6 +5,7 @@ type Todo = {
   id: number;
   text: string;
   completed: boolean;
+  deadline: Date;
 
 };
 

@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form"
+import { Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -10,15 +11,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import 'dayjs/locale/en-gb';
-
-
-import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Todo, TodoUpdate } from "../app/todo";
-import { Grid } from '@mui/material';
+import { Todo } from "../app/todo";
+import dayjs from 'dayjs';
+import 'dayjs/locale/en-gb';
 
 const TodoDialog = ({
   todo,
@@ -50,9 +48,11 @@ const TodoDialog = ({
       : undefined
   });
 
-  const onSubmit: SubmitHandler<Todo> = (infos: Todo) => {
-    onUpdateTodo(infos);
-    console.log(infos);
+  const onSubmit: SubmitHandler<Todo> = (infos: Todo) => {7
+    if (infos.id)
+      onUpdateTodo(infos);
+    else
+      onCreateTodo(infos);
   }
 
   return (
@@ -79,7 +79,9 @@ const TodoDialog = ({
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             
               <Grid item xs={12}>
-                <input type="hidden" id="id" {...register("id")} value={todo? todo.id : NaN}/>
+                <input type="hidden" id="id" {...register("id")} value={todo? todo.id : undefined}/>
+                
+                
                 <TextField
                   label="Description"
                   defaultValue={todo? todo.text : undefined}   

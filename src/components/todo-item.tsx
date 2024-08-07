@@ -1,8 +1,7 @@
 "use client"
 
-import React, { useState } from "react";
-import { Todo, TodoUpdate } from "../app/todo";
-
+import React from "react";
+import { Todo } from "../app/todo";
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -14,29 +13,21 @@ import DeleteIcon from '@mui/icons-material/Delete';
 export function TodoItem({
   todo,
   onSelect,
-  onCreate,
   onUpdate,
   onDelete,
 }: {
   todo: Todo;
   onSelect: () => void;
-  onCreate: (todo: Todo) => void;
   onUpdate: (todo: Todo) => void;
   onDelete: () => void;
 }) {
 
   
-  const { id } = todo;
   const [checked, setChecked] = React.useState([true, false]);
-  
-  const handleToggleComplete = () => {
-    onUpdate(todo);
-  }
-    
+      
   const handleToggle = (todo: Todo) => () => {
     todo.completed  = !todo.completed;
     onUpdate(todo);
-    console.log(todo);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +38,7 @@ export function TodoItem({
     onSelect();
   };
 
-  const handleDelete = (todo: Todo) => () => {
+  const handleDelete = (id?: number) => () => {
     onDelete();
   };
 
@@ -57,7 +48,7 @@ export function TodoItem({
     <ListItem
       key={todo.id}
       secondaryAction={
-        <IconButton edge="end" aria-label="delete" onClick={handleDelete(todo)} >
+        <IconButton edge="end" aria-label="delete" onClick={handleDelete(todo.id)} >
           <DeleteIcon />
         </IconButton>
       }

@@ -4,10 +4,10 @@
 
 
 export type Todo = {
-  id: number;
-  text: string;
+  id?: number;
+  text?: string;
   completed: boolean;
-  deadline: Date;
+  deadline?: Date;
 };
 
 export type TodoUpdate = Partial<Todo> & Pick<Todo, "id">;
