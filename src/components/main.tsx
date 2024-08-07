@@ -83,17 +83,27 @@ export default function Main() {
 
   const handleAPIUpdate = async (todo:Todo) => {
     try {
-      let resposta = await api.put(`Todo/${todo.id}`, 
-        { 
-          id: todo.id,
-          text: todo.text,
-          completed: todo.completed,
-          deadline: todo.deadline ? new Date(todo.deadline) : undefined
-        });
+
+      let item = { 
+        id: todo.id,
+        text: todo.text,
+        completed: todo.completed,
+        deadline: todo.deadline ? new Date(todo.deadline) : undefined
+      } 
+      let resposta = await api.put(`Todo/${todo.id}`, item );
 
       if (resposta.status == 204) //NO CONTENT
       {
         
+        // Update list        
+        setTodos(todos.map(objeto => {
+          if (objeto.id == todo.id) {
+            return item;
+          }
+          return objeto;
+        }));
+
+        console.log(todos);
         showAlert('To-do updated successfully!', 'success');
 
         setTimeout(() => {
