@@ -9,13 +9,10 @@ import AddIcon from "@mui/icons-material/Add";
 import { api } from "@/services/api";
 import { AlertComponent } from "./alert";
 
-
 export default function Main() {
 
   const [todo, setTodo] = useState<Todo>();
   const [todos, setTodos] = useState<Todo[]>([]);
-
- 
 
   useEffect(() => {
     handleAPIRead();

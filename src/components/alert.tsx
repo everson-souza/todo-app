@@ -1,8 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
-import Snackbar from '@mui/material/Snackbar';
+import React from 'react';
 import { Alert } from '@mui/material';
-import "../styles/globals.css";
-
 
 export const AlertComponent = ({
     alertStatus,

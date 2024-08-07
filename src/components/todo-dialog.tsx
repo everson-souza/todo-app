@@ -127,10 +127,7 @@ const TodoDialog = ({
               </LocalizationProvider>
             </Grid>
             <Grid item xs={12}>              
-              <div style={{
-                    textAlign: 'right',
-                    fontSize: 14,
-                  }}>
+              <div className="switch">
                 <Switch id="switch1" required={true} {...register("completed")} onChange={handleChange} checked={todo? todo.completed : false}/>
                 <span>
                   Completed
