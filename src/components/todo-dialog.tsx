@@ -85,7 +85,7 @@ const TodoDialog = ({
         <DialogContent> 
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>            
             <Grid item xs={12}>
-              <input type="hidden" id="id" {...register("id")} value={todo? todo.id : undefined}/>
+              <input type="hidden" id="id" {...register("id", {shouldUnregister: true})} value={todo? todo.id : undefined}/>
               <TextField
                 label="Description"
                 defaultValue={todo? todo.text : undefined}   
