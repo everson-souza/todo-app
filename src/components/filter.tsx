@@ -19,7 +19,7 @@ export const Filter = ({
     <div className="filter">
         <TextField
             autoFocus
-            id="text"            
+            id="search"            
             variant="outlined" 
             label="Search"
             onChange={(e) => {

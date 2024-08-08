@@ -37,7 +37,7 @@ const TodoDialog = ({
   }
 
   // Form
-  const { register, setValue, handleSubmit, formState: {errors} } = useForm<Todo>({
+  const { register, setValue, getValues, handleSubmit, formState: {errors} } = useForm<Todo>({
     defaultValues: todo
       ? {
           id: todo.id,
@@ -48,18 +48,18 @@ const TodoDialog = ({
       : undefined
   });
 
-  const onSubmit: SubmitHandler<Todo> = (infos: Todo) => {7
-    if (infos.id)
-      onUpdateTodo(infos);
+  const onSubmit: SubmitHandler<Todo> = (infos: Todo) => {
+    if (infos.id)  
+      onUpdateTodo(infos);    
     else
       onCreateTodo(infos);
   }
 
-  const [checked, setChecked] = React.useState(true);
+  const [checked, setChecked] = React.useState([true, false]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (todo) todo.completed = !todo?.completed;
-    setChecked(event.target.checked);
+    setChecked([event.target.checked, event.target.checked]);
   };
 
   return (
@@ -111,13 +111,14 @@ const TodoDialog = ({
               />
             </Grid>
             <Grid item xs={12}>
-              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'  >
+              <LocalizationProvider dateAdapter={AdapterDayjs} >
                 <DatePicker
                   slotProps={{ textField: { fullWidth: true } }}
                   defaultValue={todo ? dayjs(todo.deadline) : undefined }
-                  {...register("deadline", {
+                  {...register("deadline", {                    
                     shouldUnregister: true,
-                  })}
+                    valueAsDate:true,
+                  })}                  
                   onChange={(date) => {
                     if (date) {
                       setValue('deadline', date.toDate());
@@ -128,7 +129,7 @@ const TodoDialog = ({
             </Grid>
             <Grid item xs={12}>              
               <div className="switch">
-                <Switch id="switch1" required={true} {...register("completed")} onChange={handleChange} checked={todo? todo.completed : false}/>
+                <Switch tabIndex={-1} id="switch1" required={true} {...register("completed")} onChange={handleChange} checked={todo? todo.completed : false}/>
                 <span>
                   Completed
                 </span>

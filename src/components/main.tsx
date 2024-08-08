@@ -52,13 +52,14 @@ export default function Main() {
     }
   };
 
+  
   const handleAPICreate = async (todo:Todo) => {
     try {
       let resposta = await api.post('Todo', {
         id: undefined,
         text: todo.text,
         completed: todo.completed,
-        deadline: todo.deadline ? new Date(todo.deadline) : undefined
+        deadline: todo.deadline ? todo.deadline : undefined
       });
 
       if (resposta.status == 201) //CREATED
@@ -82,12 +83,12 @@ export default function Main() {
 
   const handleAPIUpdate = async (todo:Todo) => {
     try {
-
+      
       let item = { 
         id: todo.id,
         text: todo.text,
         completed: todo.completed,
-        deadline: todo.deadline ? new Date(todo.deadline) : undefined
+        deadline: todo.deadline ? todo.deadline : undefined
       } 
       let resposta = await api.put(`Todo/${todo.id}`, item );
 
