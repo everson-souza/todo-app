@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useConfirm } from "material-ui-confirm";
 
 export function TodoItem({
   todo,
@@ -38,17 +39,21 @@ export function TodoItem({
     onSelect();
   };
 
-  const handleDelete = (id?: number) => () => {
-    onDelete();
-  };
+  const confirm = useConfirm();
 
+  const handleDelete = (item: Todo) => () => {
+    confirm({ description: `Are you sure you want to delete ${item.text}?` })
+    .then(() => {
+      onDelete();
+    });
+  };
 
   return (
 
     <ListItem
       key={todo.id}
       secondaryAction={
-        <IconButton edge="end" aria-label="delete" onClick={handleDelete(todo.id)} >
+        <IconButton edge="end" aria-label="delete" onClick={handleDelete(todo)} >
           <DeleteIcon />
         </IconButton>
       }

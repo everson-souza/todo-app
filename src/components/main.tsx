@@ -8,6 +8,10 @@ import { Backdrop, CircularProgress, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { api } from "@/services/api";
 import { AlertComponent } from "./alert";
+import { Filter } from "./filter";
+import { debounce } from '../utils/debounce';
+import dayjs from 'dayjs';
+
 
 export default function Main() {
 
@@ -98,7 +102,6 @@ export default function Main() {
           return objeto;
         }));
 
-        console.log(todos);
         showAlert('To-do updated successfully!', 'success');
 
         setTimeout(() => {
@@ -154,6 +157,33 @@ export default function Main() {
     setDialogState(true);
   };
 
+  // FILTER FUNCTIONS
+  const [filteredTodos, setfilteredTodos] = useState<Todo[]>([]);
+  
+  // Debounced function to filter users
+  const filterListTodos = debounce((search:string) => {
+    const filtered = todos.filter(todo => todo.text?.toLowerCase().includes(search.toLowerCase()));
+    
+    filtered.sort((a, b) => {
+      if (a.deadline == undefined) return 1;
+      if (b.deadline == undefined) return -1;
+  
+      return dayjs(b.deadline).toDate().getTime() - dayjs(a.deadline).toDate().getTime();
+    });
+
+    console.log(filtered);
+
+    setfilteredTodos(filtered);
+
+  }, 300); // Debounce for 300ms
+
+  
+
+
+
+
+
+
   return (
     <div>
       <AlertComponent
@@ -165,10 +195,13 @@ export default function Main() {
         
         <h1>TO-DO LIST</h1>
         
+        <Filter
+          handleFilter = {(filter: string) => filterListTodos(filter)}
+        />
+
         <Fab sx={{ marginLeft: "auto", display:"flex" }} color="primary" onClick={handleClickOpen}>
           <AddIcon />
         </Fab>
-
         <TodoDialog 
           todo = {todo}
           state = {open}
@@ -199,6 +232,8 @@ export default function Main() {
           </Backdrop>
           )
         }
+
+        
       </div>
     </div>    
   );
