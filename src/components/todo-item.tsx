@@ -70,7 +70,7 @@ export function TodoItem({
             disableRipple
           />
         </ListItemIcon>
-        <ListItemText style={{textDecorationLine: todo.completed ? 'line-through' : '', color: todo.completed ? '#bbbbbb' : '', textDecorationStyle: 'solid'}} id={'item-'+todo.id} primary={todo.text} onClick={handleSelect(todo)} />
+        <ListItemText style={{textDecorationLine: todo.completed ? 'line-through' : '', color: todo.completed ? '#bbbbbb' : todo.deadline ? '#ff0000' : '', textDecorationStyle: 'solid'}} id={'item-'+todo.id} primary={todo.text} onClick={handleSelect(todo)} />        
       </ListItemButton>
     </ListItem>
   );

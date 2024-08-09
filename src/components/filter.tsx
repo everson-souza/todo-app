@@ -22,7 +22,7 @@ export const Filter = ({
             id="search"            
             variant="outlined" 
             label="Search"
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 onFilterChange(e)
             }}
             style={{alignContent: 'center'}}
