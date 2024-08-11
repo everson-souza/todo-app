@@ -21,3 +21,14 @@ div.principal{
     text-align: right;
     font-size: 14;
 }
+
+.filter{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.filter-input{
+    margin: 0 10px;
+}

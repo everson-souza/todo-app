@@ -44,6 +44,7 @@ export default function Main() {
       const response = await api.get('/Todo');
       setLoading(false);
       setTodos(response.data);
+      setfilteredTodos(response.data);        
     } catch (error) {
       setLoading(false);
       setTodos([])
@@ -52,7 +53,6 @@ export default function Main() {
     }
   };
 
-  
   const handleAPICreate = async (todo:Todo) => {
     try {
       let resposta = await api.post('Todo', {
@@ -65,7 +65,7 @@ export default function Main() {
       if (resposta.status == 201) //CREATED
       {
         todos.push(resposta.data);
-        
+        filterListTodos(filterValue);
         showAlert('To-do created successfully!', 'success');
 
         setTimeout(() => {
@@ -96,12 +96,14 @@ export default function Main() {
       {
         
         // Update list        
-        setTodos(todos.map(objeto => {
+        setTodos(todos.slice(0).map(objeto => {
           if (objeto.id == todo.id) {
             return item;
           }
           return objeto;
         }));
+
+        filterListTodos(filterValue);
 
         showAlert('To-do updated successfully!', 'success');
 
@@ -125,13 +127,13 @@ export default function Main() {
       {
 
         setTodos(todos => todos.filter((item) => item.id !== id));
+        filterListTodos(filterValue);
         showAlert('To-do deleted successfully!', 'success');
 
         setTimeout(() => {
           hideAlert()
         }, 3000)
 
-        todos.push(resposta.data);
         handleClickClose();
       }      
     } catch (error) {
@@ -160,30 +162,58 @@ export default function Main() {
 
   // FILTER FUNCTIONS
   const [filteredTodos, setfilteredTodos] = useState<Todo[]>([]);
-  
-  // Debounced function to filter users
+  const [filterValue, setfilterValue] = useState('');
+
   const filterListTodos = debounce((search:string) => {
-    const filtered = todos.filter(todo => todo.text?.toLowerCase().includes(search.toLowerCase()));
-    
-    filtered.sort((a, b) => {
-      if (a.deadline == undefined) return 1;
-      if (b.deadline == undefined) return -1;
-  
-      return dayjs(b.deadline).toDate().getTime() - dayjs(a.deadline).toDate().getTime();
-    });
-
-    console.log(filtered);
-
-    setfilteredTodos(filtered);
+    setfilterValue(search);    
+    setfilteredTodos(todos.slice(0).filter(todo => todo.text?.toLowerCase().includes(search.toLowerCase())));
 
   }, 300); // Debounce for 300ms
 
-  
+  const sortList = (sort: string, todos: Todo[]) => {
+    let filtered: Todo[];
+    switch (sort) {
+      case 'id':
+        filtered = todos.slice(0).sort((a, b) => {
+          if (a.id == undefined) return 1;
+          if (b.id == undefined) return -1;  
+          return a.id - b.id;
+        })
+        // todos = filtered;
+        setTodos(filtered);
+        break;
 
+      case 'date':
+        filtered = todos.slice(0).sort((a, b) => {
+          if (a.deadline == undefined) return 1;
+          if (b.deadline == undefined) return -1;      
+          return dayjs(a.deadline).toDate().getTime() - dayjs(b.deadline).toDate().getTime();
+        })
+        // todos = filtered;
+        setTodos(filtered);    
+        console.log(filtered);
+        break;
 
-
-
-
+      case 'text':
+        filtered = todos.slice(0).sort((a, b) => {
+          if (a.text == undefined) return 1;
+          if (b.text == undefined) return -1;
+          return a.text.localeCompare(b.text)
+        })
+        // todos = filtered;
+        setTodos(filtered);        
+        break;
+      default:
+        filtered = todos.slice(0).sort((a, b) => {
+          if (a.id == undefined) return 1;
+          if (b.id == undefined) return -1;  
+          return a.id - b.id;
+        })
+        // todos = filtered;
+        setTodos(filtered);
+        break;
+    }
+  }
 
   return (
     <div>
@@ -198,11 +228,9 @@ export default function Main() {
         
         <Filter
           handleFilter = {(filter: string) => filterListTodos(filter)}
+          handleSort =  {(selected: string) => sortList(selected, todos)}
         />
 
-        <Fab sx={{ marginLeft: "auto", display:"flex" }} color="primary" onClick={handleClickOpen}>
-          <AddIcon />
-        </Fab>
         <TodoDialog 
           todo = {todo}
           state = {open}
@@ -218,7 +246,7 @@ export default function Main() {
           ) : 
           (
             <TodoList
-              todos={todos}
+              todos={filteredTodos}
               onSelectTodo = {(id?:number) => handleSelectTodo(id)}
               onUpdateTodo = {(todo: Todo) => handleAPIUpdate(todo)}
               onDeleteTodo = {(id?:number) => handleAPIDelete(id)}
@@ -233,8 +261,9 @@ export default function Main() {
           </Backdrop>
           )
         }
-
-        
+        <Fab sx={{ marginLeft: "auto", display:"flex", marginTop: "50px" }} color="primary" onClick={handleClickOpen}>
+          <AddIcon />
+        </Fab>        
       </div>
     </div>    
   );
