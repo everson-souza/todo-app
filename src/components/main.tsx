@@ -65,7 +65,7 @@ export default function Main() {
       if (resposta.status == 201) //CREATED
       {
         todos.push(resposta.data);
-        filterListTodos(filterValue);
+        filterListTodos(filterValue, todos);
         showAlert('To-do created successfully!', 'success');
 
         setTimeout(() => {
@@ -95,15 +95,16 @@ export default function Main() {
       if (resposta.status == 204) //NO CONTENT
       {
         
-        // Update list        
-        setTodos(todos.slice(0).map(objeto => {
+        let updatedTodos = todos.slice(0).map(objeto => {
           if (objeto.id == todo.id) {
             return item;
           }
           return objeto;
-        }));
+        });
+        // Update list        
+        setTodos(updatedTodos);
 
-        filterListTodos(filterValue);
+        filterListTodos(filterValue, updatedTodos);
 
         showAlert('To-do updated successfully!', 'success');
 
@@ -126,8 +127,9 @@ export default function Main() {
       if (resposta.status == 204) //NO CONTENT
       {
 
-        setTodos(todos => todos.filter((item) => item.id !== id));
-        filterListTodos(filterValue);
+        let updatedTodos = todos.slice(0).filter((item) => item.id !== id) 
+        setTodos(updatedTodos);
+        filterListTodos(filterValue, updatedTodos);
         showAlert('To-do deleted successfully!', 'success');
 
         setTimeout(() => {
@@ -164,7 +166,7 @@ export default function Main() {
   const [filteredTodos, setfilteredTodos] = useState<Todo[]>([]);
   const [filterValue, setfilterValue] = useState('');
 
-  const filterListTodos = debounce((search:string) => {
+  const filterListTodos = debounce((search:string, todos : Todo[]) => {
     setfilterValue(search);    
     setfilteredTodos(todos.slice(0).filter(todo => todo.text?.toLowerCase().includes(search.toLowerCase())));
 
@@ -180,7 +182,7 @@ export default function Main() {
           return a.id - b.id;
         })
         // todos = filtered;
-        setTodos(filtered);
+        setfilteredTodos(filtered);
         break;
 
       case 'date':
@@ -190,7 +192,7 @@ export default function Main() {
           return dayjs(a.deadline).toDate().getTime() - dayjs(b.deadline).toDate().getTime();
         })
         // todos = filtered;
-        setTodos(filtered);    
+        setfilteredTodos(filtered);    
         console.log(filtered);
         break;
 
@@ -201,7 +203,7 @@ export default function Main() {
           return a.text.localeCompare(b.text)
         })
         // todos = filtered;
-        setTodos(filtered);        
+        setfilteredTodos(filtered);        
         break;
       default:
         filtered = todos.slice(0).sort((a, b) => {
@@ -210,7 +212,7 @@ export default function Main() {
           return a.id - b.id;
         })
         // todos = filtered;
-        setTodos(filtered);
+        setfilteredTodos(filtered);
         break;
     }
   }
@@ -227,7 +229,7 @@ export default function Main() {
         <h1>TO-DO LIST</h1>
         
         <Filter
-          handleFilter = {(filter: string) => filterListTodos(filter)}
+          handleFilter = {(filter: string) => filterListTodos(filter, todos)}
           handleSort =  {(selected: string) => sortList(selected, todos)}
         />
 
